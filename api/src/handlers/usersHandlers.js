@@ -5,7 +5,8 @@ const getAllUsersHandler = (req,res)=>{
 };
 
 const getUserByIdHandler =(req,res)=>{
-    res.status(200).send('Estoy en un usuario en particular');
+    const {id} = req.params;
+    res.status(200).send(`Estoy en el usuario con id:${id}`);
 };
 
 const postUserHandler = (req,res)=>{

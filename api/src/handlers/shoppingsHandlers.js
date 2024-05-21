@@ -5,7 +5,8 @@ const getAllShoppingsHandler = (req,res)=>{
 };
 
 const getShoppingByIdHandler = (req,res)=>{
-    res.status(200).send('Estoy en una compra en particular');
+    const {id} = req.params;
+    res.status(200).send(`Estoy en la compra con id: ${id}`);
 };
 
 const postShoppingHandler = (req,res)=>{
