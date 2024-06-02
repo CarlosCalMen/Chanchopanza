@@ -19,11 +19,17 @@ const postProductHandler=(req,res)=>{
 };
 
 const putProductHandler=(req,res)=>{
-    res.status(200).send('Estoy modificando un Producto');
+    const {id} = req.params;
+    if (id) {
+        res.status(200).send(`Estoy modificando el Producto con id: ${id}`);
+    };    
 };
 
 const deleteProductHandler=(req,res)=>{
-    res.status(200).send('Estoy eliminando un Producto');
+    const {id} = req.params;
+    if (id) {
+        res.status(200).send(`Estoy eliminando el Producto con id: ${id}`);
+    };
 };
 
 module.exports = {

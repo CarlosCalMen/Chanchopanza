@@ -10,8 +10,8 @@ usersRouter.get('/:id',getUserByIdHandler);
 
 usersRouter.post('/',postUserHandler);
 
-usersRouter.put('/',putUserHandler);
+usersRouter.put('/:id',putUserHandler);
 
-usersRouter.delete('/',deleteUserHandler);
+usersRouter.delete('/:id',deleteUserHandler);
 
 module.exports = usersRouter;

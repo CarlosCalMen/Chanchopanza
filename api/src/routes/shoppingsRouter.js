@@ -10,8 +10,8 @@ shoppingsRouter.get('/:id',getShoppingByIdHandler);
 
 shoppingsRouter.post('/',postShoppingHandler); 
 
-shoppingsRouter.put('/',putShoppingHandler);
+shoppingsRouter.put('/:id',putShoppingHandler);
 
-shoppingsRouter.delete('/',deleteShoppingHandler); 
+shoppingsRouter.delete('/:id',deleteShoppingHandler); 
 
 module.exports = shoppingsRouter;

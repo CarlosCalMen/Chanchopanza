@@ -11,8 +11,8 @@ productsRouter.get('/:id',getProductByIdHandler);
 
 productsRouter.post('/',postProductHandler); 
 
-productsRouter.put('/',putProductHandler);
+productsRouter.put('/:id',putProductHandler);
 
-productsRouter.delete('/',deleteProductHandler); 
+productsRouter.delete('/:id',deleteProductHandler); 
 
 module.exports = productsRouter;

@@ -14,11 +14,17 @@ const postShoppingHandler = (req,res)=>{
 };
 
 const putShoppingHandler = (req,res)=>{
-    res.status(200).send('Estoy modificando una Compra');
+    const {id} = req.params;
+    if (id){
+        res.status(200).send(`Estoy modificando la Compra con id: ${id}`);
+    };    
 };
 
 const deleteShoppingHandler = (req,res)=>{
-    res.status(200).send('Estoy eliminando una Compra');
+    const {id} = req.params;
+    if (id){
+        res.status(200).send(`Estoy eliminando la Compra con id: ${id}`);
+    };    
 };
 
 
