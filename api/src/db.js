@@ -281,3 +281,5 @@ sequelize.define('Usuario',{
 module.exports = {
                 conn:sequelize
 };
+
+//está oendiente implemantar las relaciones entra cada una de las tablas. lo cual haré próximammente, con eso procedo a culminar lo necesario para el back end
