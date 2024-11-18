@@ -283,3 +283,5 @@ module.exports = {
 };
 
 //está oendiente implemantar las relaciones entra cada una de las tablas. lo cual haré próximammente, con eso procedo a culminar lo necesario para el back end
+//definiendo los atributods que serán FK en las tablas lo cual  se debe concretar proximammete
+//actualmente con un proyecto que no permite culminar esto
