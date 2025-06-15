@@ -3,9 +3,9 @@ const {DataTypes} = require('sequelize');
 module.exports = (sequelize)=>{
     sequelize.define('Compra',{
         idCompra:{
-            type:DataTypes.INTEGER,
-        primaryKey:true,
-        autoIncrement:true,            
+            type:DataTypes.UUIDV4,
+            primaryKey:true,
+            defaultValue:DataTypes.UUV4,            
         },
         fecha:{
             type:DataTypes.DATEONLY,

@@ -1,12 +1,12 @@
-const sequelize = require('sequelize');
+const sequ = require('sequelize');
 const {DataTypes} = require('sequelize');
 
 module.exports = (sequelize)=>{
-    sequelize.define('Orden',{
+    sequelize.define('Comanda',{
         idOrden:{
-            type:DataTypes.INTEGER,
+            type:DataTypes.UUIDV4,
             primaryKey:true,
-            autoIncrement:true,
+            defaultValue:DataTypes.UUV4,
         },
         fecha:{
             type:DataTypes.DATEONLY,

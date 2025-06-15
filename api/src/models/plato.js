@@ -3,18 +3,23 @@ const {DataTypes} = require('sequelize');
 module.exports = (sequelize)=>{
     sequelize.define('Plato',{
         idPlato:{
-            type:DataTypes.INTEGER,
+            type:DataTypes.UUIDV4,
             primaryKey:true,
-            autoIncrement:true,
+            defaultValue:DataTypes.UUV4,
         },
         plato:{
             type:DataTypes.STRING,
             allowNull:false,
         },
-        precio:{
+        precioCosto:{
             type:DataTypes.FLOAT,
             allowNull:false,
         },
+        precioVenta:{
+            type:DataTypes.FLOAT,
+            allowNull:false,
+
+        }
     },
     {timestamps:false})
 };
