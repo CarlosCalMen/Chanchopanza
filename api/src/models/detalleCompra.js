@@ -4,20 +4,34 @@ module.exports = (sequelize) => {
   sequelize.define('DetalleCompra', {
     cantidad: {
       type: DataTypes.INTEGER,
-      allowNull: false
+      allowNull: false,
+      defaultValue: 1,
+      validate: {min: 1},
+    },
+    precio:{
+      type:DataTypes.DECIMAL(10,2),
+      allowNull:false,
     },
     variacion:{
-      type:DataTypes.FLOAT,
-      allowNull:true,
+      type:DataTypes.DECIMAL(10,2),
+      defaultValue:0,
     },
     subTotal:{
       allowNull:false,
       get(){
-        cantidad*precio;       
+        return (this.cantidad * this.precio) + (this.variacion || 0);       
       },
     },
   },
   {
-    timestamps: false
+    timestamps: false,
+    hooks: {
+      beforeCreate: async (detalle)=>{
+        if (!detalle.precio) {
+          const insumo = await sequelize.models.Insumo.FindByPk (detalle.idInsumo);
+          detalle.precio = insumo.precioUnitario;
+        };
+      },
+    },
   });
 };
