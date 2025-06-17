@@ -19,21 +19,33 @@ module.exports = (sequelize)=>{
             validate:{min:0},
         },
         totalEfectivo:{
-            type:DataTypes.FLOAT,
+            type:DataTypes.DECIMAL(10,2),
             defaultValue:0.00,
             validate:{min:0},
         },
         totalTarjeta:{
-            type:DataTypes.FLOAT,
+            type:DataTypes.DECIMAL(10,2),
             defaultValue:0.00,
             validate:{min:0},
         },
         total:{
             type:DataTypes.VIRTUAL,
             get(){
-                return this.totalYape + this.totalEfectivo + this.totalTarjeta;
+                if (!this.DetallesComandas) return 0;
+                return this.DetallesComandas.reduce((suma,detalle)=>{
+                        return suma + detalle.subTotal 
+                },0);
             },
         },
     },
-    {timestamps:false});
+    {   timestamps:false,
+        hooks: {
+            beforeSave:(comanda)=>{
+                // Validación: Medios de pago vs Total
+                const sumaPagos = comanda.totalYape + comanda.totalEfectivo + comanda.totalTarjeta;
+                if (Math.abs(sumaPagos - comanda.total) > 0.01)  // Permite pequeñas diferencias por redondeo
+                    throw new Error(`La suma de pagos (${sumaPagos}) no coincide con el total (${comanda.total})`);
+            },   
+        }
+    });
 };
