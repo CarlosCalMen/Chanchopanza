@@ -8,7 +8,7 @@ module.exports = (sequelize)=>{
         defaultValue:DataTypes.UUIDV4,
        }, 
        perfil:{
-        type:DataTypes.ENUM('ADMINISTRADOR','USUARIO','SOCIO');
+        type:DataTypes.ENUM('ADMINISTRADOR','USUARIO','SOCIO'),
         allownull:false,
        },
     },
