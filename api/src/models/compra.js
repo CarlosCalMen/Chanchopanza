@@ -5,13 +5,21 @@ module.exports = (sequelize)=>{
         idCompra:{
             type:DataTypes.UUIDV4,
             primaryKey:true,
-            defaultValue:DataTypes.UUV4,            
+            defaultValue:DataTypes.UUIDV4,            
         },
         fecha:{
             type:DataTypes.DATEONLY,
+            defaultValue:DataTypes.NOW,
             },
         total:{
-            type:DataTypes.FLOAT,
+            type:DataTypes.DECIMAL(10,2),
+            get (){
+                if (!this.DetalleCompras) return 0;
+                return this.DetalleCompras.reduce((suma,detalle)=>{
+                    return suma + detalle.subTotal; 
+                },0);
+            },
         },    
-    },{timestamps:false})
+    },
+    {timestamps:false})
 };
