@@ -61,7 +61,7 @@ module.exports = (sequelize)=>{
             type: DataTypes.DATE,
         },
     },{
-    tableName: 'empleados',
+    //tableName: 'empleados',
     timestamps: false,
     });
 };
