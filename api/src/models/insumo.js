@@ -20,14 +20,15 @@ module.exports = (sequelize)=>{
             allowNull:false,
         },
         unidad:{
-            type:DataTypes.ENUM('Kg','Un','Pqt'),
+            type:DataTypes.ENUM('KG','UN','PQT','ATADO'),
             allowNull:false,
 
         },
-     /*   stock:{
+       stock:{
             type:DataTypes.FLOAT,
-            //allowNull:false,
-        },*/
+            allowNull:false,
+            defaultValue: 0,
+        },
     },
     {timestamps:false});
 };
