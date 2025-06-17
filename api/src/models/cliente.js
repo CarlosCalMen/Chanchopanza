@@ -5,7 +5,7 @@ sequelize.define('Cliente',{
     idCliente:{
         type:DataTypes.UUIDV4,
         primaryKey:true,
-        defaultValue:DataTypes.UUV4,
+        defaultValue:DataTypes.UUIDV4,
     },
     nombre:{
         type:DataTypes.STRING,

@@ -74,6 +74,15 @@ module.exports = (sequelize)=>{
             type:DataTypes.DATEONLY,
             allowNull:true,
         },
+        perfil:{
+        type:DataTypes.STRING,
+        validate:{
+            isIn:{
+                args:[['USUARIO','SOCIO','ADMINISTRADOR']],
+                msg:'El perfil debe ser: USUARIO, SOCIO o ADMINISTRADOR',
+            },
+        },
+    },
     },
     {timestamps:false});
 };

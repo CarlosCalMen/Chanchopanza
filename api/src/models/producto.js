@@ -1,4 +1,4 @@
-const {DataTypes} =require('sequelize');
+const {DataTypes} = require('sequelize');
 
 module.exports = (sequelize)=>{
     sequelize.define('Producto',{
@@ -11,23 +11,14 @@ module.exports = (sequelize)=>{
             type:DataTypes.STRING,
             allowNull:false,
         },
-        categoria:{
-            type:DataTypes.ENUM('Bebidas','Producto elaborado', 'Insumo','Servicio'),
-            allowNull:false,
-        },
-        precio:{
+        precioCosto:{
             type:DataTypes.FLOAT,
             allowNull:false,
         },
-        unidad:{
-            type:DataTypes.ENUM('Kg','Un','Pqt'),
-            allowNull:false,
-
-        },
-     /*   stock:{
+        /*precioVenta:{
             type:DataTypes.FLOAT,
-            //allowNull:false,
+            allowNull:false,
         },*/
     },
-    {timestamps:false});
+    {timestamps:false})
 };

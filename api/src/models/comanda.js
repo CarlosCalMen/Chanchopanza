@@ -3,26 +3,30 @@ const {DataTypes} = require('sequelize');
 
 module.exports = (sequelize)=>{
     sequelize.define('Comanda',{
-        idOrden:{
+        idComanda:{
             type:DataTypes.UUIDV4,
             primaryKey:true,
-            defaultValue:DataTypes.UUV4,
+            defaultValue:DataTypes.UUIDV4,
         },
         fecha:{
             type:DataTypes.DATEONLY,
-            defaultValue:Sequelize.NOW,
+            defaultValue:DataTypes.NOW,
+            allowNull:false,
         },
         totalYape:{
-            type:DataTypes.FLOAT,
-            defaultValue:0,
+            type:DataTypes.DECIMAL(10,2),
+            defaultValue:0.00,
+            validate:{min:0},
         },
         totalEfectivo:{
             type:DataTypes.FLOAT,
-            defaultValue:0,
+            defaultValue:0.00,
+            validate:{min:0},
         },
         totalTarjeta:{
             type:DataTypes.FLOAT,
-            defaultValue:0,
+            defaultValue:0.00,
+            validate:{min:0},
         },
         total:{
             type:DataTypes.VIRTUAL,
