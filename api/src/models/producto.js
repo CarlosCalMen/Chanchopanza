@@ -12,13 +12,15 @@ module.exports = (sequelize)=>{
             allowNull:false,
         },
         precioCosto:{
-            type:DataTypes.FLOAT,
+            type:DataTypes.DECIMAL(10,2),
             allowNull:false,
+            defaultValue:0,
         },
-        /*precioVenta:{
+        precioVenta:{
             type:DataTypes.FLOAT,
             allowNull:false,
-        },*/
+            defaultValue: 0,
+        },
     },
     {timestamps:false})
 };
