@@ -17,6 +17,7 @@ module.exports = (sequelize) => {
       defaultValue:0,
     },
     subTotal:{
+      type:DataTypes.DECIMAL(10,2),
       allowNull:false,
       get(){
         return (this.cantidad * this.precio) + (this.variacion || 0);       

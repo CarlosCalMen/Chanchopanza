@@ -54,8 +54,11 @@ const setupRelations = () => {
   Empleado.belongsTo(Sucursal, { foreignKey: 'idSucursal' });
 
   // 3. Sucursal <-> Proveedor (M:M)
-  Sucursal.belongsToMany(Proveedor, {through: SucursalProveedor,foreignKey: 'idSucursal'});
-  Proveedor.belongsToMany(Sucursal, {through: SucursalProveedor,foreignKey: 'idProveedor'});
+  // Sucursal.belongsToMany(Proveedor, {through: SucursalProveedor,foreignKey: 'idSucursal'});
+  // Proveedor.belongsToMany(Sucursal, {through: SucursalProveedor,foreignKey: 'idProveedor'});
+
+  Sucursal.belongsToMany(Proveedor, { through: 'SucursalProveedor' });
+  Proveedor.belongsToMany(Sucursal, { through: 'SucursalProveedor' });
 
   // 4. Proveedor -> Compra (1:M)
   Proveedor.hasMany(Compra, { foreignKey: 'idProveedor' });
@@ -70,8 +73,12 @@ const setupRelations = () => {
   Insumo.belongsToMany(Producto, {through: Receta,foreignKey: 'idInsumo'});
 
   // 7. Sucursal <-> Cliente (M:M)
-  Sucursal.belongsToMany(Cliente, {through: ClienteSucursal,foreignKey: 'idSucursal'});
-  Cliente.belongsToMany(Sucursal, {through: ClienteSucursal,foreignKey: 'idCliente'});
+  // Sucursal.belongsToMany(Cliente, {through: ClienteSucursal,foreignKey: 'idSucursal'});
+  // Cliente.belongsToMany(Sucursal, {through: ClienteSucursal,foreignKey: 'idCliente'});
+
+  Sucursal.belongsToMany(Cliente, { through: 'ClienteSucursal' });
+  Cliente.belongsToMany(Sucursal, { through: 'ClienteSucursal' });
+
 
   // 8. Cliente -> Comanda (1:M)
   Cliente.hasMany(Comanda, { foreignKey: 'idCliente' });
@@ -90,5 +97,5 @@ const setupRelations = () => {
 // Inicializar relaciones
 setupRelations();
 
-module.exports = {...models,sequelize};
+module.exports = {...sequelize.models, conn:sequelize};
 

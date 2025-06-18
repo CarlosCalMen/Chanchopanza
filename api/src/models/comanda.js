@@ -4,7 +4,7 @@ const {DataTypes} = require('sequelize');
 module.exports = (sequelize)=>{
     sequelize.define('Comanda',{
         idComanda:{
-            type:DataTypes.UUIDV4,
+            type:DataTypes.UUID,
             primaryKey:true,
             defaultValue:DataTypes.UUIDV4,
         },
