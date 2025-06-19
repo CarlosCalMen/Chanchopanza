@@ -26,6 +26,7 @@ module.exports = (sequelize) => {
         },
     },
     { timestamps: false,
+      tableName:'detalleComanda',  
       hooks:{
             beforeCreate: async(detalle)=>{
                 // Solo si no se proporcionó el precio manualmente

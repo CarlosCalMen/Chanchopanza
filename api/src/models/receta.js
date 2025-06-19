@@ -13,6 +13,8 @@ module.exports = (sequelize)=>{
             defaultValue:0.001,
         },
         },
-        {timestamps:false}
+        {   timestamps:false,
+            tableName:'recetas',
+        }
     );
 };

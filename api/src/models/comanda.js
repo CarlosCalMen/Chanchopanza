@@ -39,6 +39,7 @@ module.exports = (sequelize)=>{
         },
     },
     {   timestamps:false,
+        tableName:'comandas',
         hooks: {
             beforeSave:(comanda)=>{
                 // Validación: Medios de pago vs Total

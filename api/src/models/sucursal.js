@@ -19,5 +19,7 @@ sequelize.define('Sucursal',{
         type:DataTypes.DATEONLY,
     },
 },
-{timestamps:false});
+{   timestamps:false,
+    tableName:'sucursales',    
+});
 };

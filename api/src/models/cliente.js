@@ -31,5 +31,7 @@ sequelize.define('Cliente',{
         allowNull:true,
     },
 },
-{timestamps:false});
+{   timestamps:false,
+    tableName:'clientes',
+});
 };
