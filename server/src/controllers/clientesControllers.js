@@ -25,6 +25,22 @@ const obtenerClientePorId = async (id) => {
   };
 };
 
+//obtener un cliente por nombre o apellido
+const obtenerClientePorApellido = async (apellido) => {
+  try {
+    const clientes = await Cliente.findAll({
+      where: {
+        [Op.iLike]: `%${apellido}%`
+      }});
+    if (!clientes) {
+      throw new Error('Clientes no encontrados');
+    }
+    return clientes;
+  } catch (error) {
+    throw new Error('Error al obtener el cliente');
+  };
+};
+
 //crear un cliente
 const crearCliente = async (clienteData) => {
   try {
@@ -63,3 +79,10 @@ const eliminarCliente = async (id) => {
     };
 };
 
+module.exports = {
+    obtenerClientes,
+    obtenerClientePorId,
+    crearCliente,
+    actualizarCliente,
+    eliminarCliente
+};
