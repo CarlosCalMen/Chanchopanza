@@ -21,6 +21,11 @@ module.exports = (sequelize)=>{
             allowNull:false,
             defaultValue: 0,
         },
+        eliminado:{
+            type:DataTypes.BOOLEAN,
+            allowNull:false,
+            defaultValue:false,
+        },
     },
     {   timestamps:false,
         tableName:'productos',

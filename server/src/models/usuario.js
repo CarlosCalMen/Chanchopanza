@@ -75,14 +75,19 @@ module.exports = (sequelize)=>{
             allowNull:true,
         },
         perfil:{
-        type:DataTypes.STRING,
-        validate:{
-            isIn:{
-                args:[['USUARIO','SOCIO','ADMINISTRADOR']],
-                msg:'El perfil debe ser: USUARIO, SOCIO o ADMINISTRADOR',
+            type:DataTypes.STRING,
+            validate:{
+                isIn:{
+                    args:[['USUARIO','SOCIO','ADMINISTRADOR']],
+                    msg:'El perfil debe ser: USUARIO, SOCIO o ADMINISTRADOR',
+                },
             },
         },
-    },
+        eliminado:{
+            type:DataTypes.BOOLEAN,
+            allowNull:false,
+            defaultValue:false,
+        },
     },
     {   timestamps:false,
         tableName:'usuario',

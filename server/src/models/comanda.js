@@ -37,6 +37,11 @@ module.exports = (sequelize)=>{
                 },0);
             },
         },
+        eliminado:{
+            type:DataTypes.BOOLEAN,
+            allowNull:false,
+            defaultValue:false,
+        }
     },
     {   timestamps:false,
         tableName:'comandas',

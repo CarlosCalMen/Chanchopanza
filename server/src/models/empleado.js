@@ -60,7 +60,13 @@ module.exports = (sequelize)=>{
         fechaFin: {
             type: DataTypes.DATE,
         },
-    },{
+        eliminado:{
+            type:DataTypes.BOOLEAN,
+            allowNull:false,
+            defaultValue:false,
+        },
+    },
+    {
         tableName: 'empleados',
         timestamps: false,
     });

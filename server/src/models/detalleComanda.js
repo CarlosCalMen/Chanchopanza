@@ -8,14 +8,13 @@ module.exports = (sequelize) => {
         validate:{min:1},
         },
         variacion: {
-        type: DataTypes.DECIMAL(10,2),
-        allowNull: true,
-        defaultValue:0,
+            type: DataTypes.DECIMAL(10,2),
+            allowNull: true,
+            defaultValue:0,
         },
         precioVenta:{
             type:DataTypes.DECIMAL(10,2),
             allowNull:false,
-            
         },
         subTotal:{
             type:DataTypes.VIRTUAL,
@@ -24,10 +23,15 @@ module.exports = (sequelize) => {
                 return this.cantidad * this.precioVenta + (this.variacion || 0);
             },
         },
+        eliminado:{
+            type:DataTypes.BOOLEAN,
+            allowNull:false,
+            defaultValue:false,
+        },
     },
-    { timestamps: false,
-      tableName:'detalleComanda',  
-      hooks:{
+    {   timestamps: false,
+        tableName:'detalleComanda',  
+        hooks:{
             beforeCreate: async(detalle)=>{
                 // Solo si no se proporcionó el precio manualmente
                 if (!detalle.precioVenta) {

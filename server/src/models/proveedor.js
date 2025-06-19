@@ -39,6 +39,11 @@ module.exports = (sequelize)=>{
                 },
             },
         },
+        eliminado:{
+        type:DataTypes.BOOLEAN,
+        allowNull:false,
+        defaultValue:false,
+        },
     },
     {   timestamps:false,
         tableName:'proveedores',

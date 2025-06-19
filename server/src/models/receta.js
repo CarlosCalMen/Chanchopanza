@@ -12,9 +12,13 @@ module.exports = (sequelize)=>{
             allownull:false,
             defaultValue:0.001,
         },
+        eliminado:{
+            type:DataTypes.BOOLEAN,
+            allowNull:false,
+            defaultValue:false,
         },
-        {   timestamps:false,
-            tableName:'recetas',
-        }
-    );
+    },
+    {   timestamps:false,
+        tableName:'recetas',
+    },);
 };

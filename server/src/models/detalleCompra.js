@@ -23,7 +23,12 @@ module.exports = (sequelize) => {
         return (this.cantidad * this.precio) + (this.variacion || 0);       
       },
     },
-  },
+    eliminado:{
+      type:DataTypes.BOOLEAN,
+      allowNull:false,
+      defaultValue:false,
+    },
+},
   {
     timestamps: false,
     tableName:'detalleCompra',

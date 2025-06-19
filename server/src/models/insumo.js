@@ -22,12 +22,16 @@ module.exports = (sequelize)=>{
         unidad:{
             type:DataTypes.ENUM('KG','UN','PQT','ATADO'),
             allowNull:false,
-
         },
-       stock:{
+        stock:{
             type:DataTypes.FLOAT,
             allowNull:false,
             defaultValue: 0,
+        },
+        eliminado:{
+            type:DataTypes.BOOLEAN,
+            allowNull:false,
+            defaultValue:false,
         },
     },
     {   timestamps:false,
