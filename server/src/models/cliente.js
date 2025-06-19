@@ -10,7 +10,17 @@ module.exports = (sequelize)=>{
         nombre:{
             type:DataTypes.STRING,
             allowNull:false,
-            defaultValue:'GENERICO'
+            defaultValue:'GENERICO',
+        },
+        apellidoPaterno:{
+            type:DataTypes.STRING,
+            allowNull:true,
+            defaultValue:'',
+        },
+        apellidoMaterno:{
+            type:DataTypes.STRING,
+            allowNull:true,
+            defaultValue:'',
         },
         dni:{
             type:DataTypes.STRING,
