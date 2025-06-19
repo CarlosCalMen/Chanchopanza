@@ -13,11 +13,11 @@ const obtenerClientes = async () => {
 };
 
 //obtener un cliente por id
-const obtenerClientePorId = async (id) => {
+const obtenerClienteById = async (id) => {
   try {
     const cliente = await Cliente.findByPk(id);
     if (!cliente) {
-      throw new Error('Cliente no encontrado');
+      throw new Error(`No existe Cliente con ID ${id}`);
     }
     return cliente;
   } catch (error) {
@@ -25,17 +25,47 @@ const obtenerClientePorId = async (id) => {
   };
 };
 
-//obtener un cliente por nombre o apellido
-const obtenerClientePorApellido = async (apellido) => {
+//obtener un cliente por apellido o nombre de empresa que estará almacenado en apellido paterno
+const obtenerClienteByApellido = async (apellido) => {
   try {
     const clientes = await Cliente.findAll({
       where: {
         [Op.iLike]: `%${apellido}%`
       }});
-    if (!clientes) {
-      throw new Error('Clientes no encontrados');
+    if (!clientes) throw new Error('Clientes no encontrados');
+    return clientes.slice(0,15);
+  } catch (error) {
+    throw new Error('Error al obtener el cliente');
+  };
+};
+
+//obtener un cliente por dni
+const obtenerClienteByDni = async (dni) => {
+  try {
+    const cliente = await Cliente.findOne({
+      where: {
+        dni: dni
+      }
+    });
+    if (!cliente) {
+      throw new Error(`No existe Cliente con DNI ${dni}`);
     }
-    return clientes;
+    return cliente;
+  } catch (error) {
+    throw new Error('Error al obtener el cliente');
+  };
+};
+
+//obtener un cliente por ruc
+const obtenerClienteByRuc = async (ruc) => {
+  try {
+    const cliente = await Cliente.findOne({
+      where: {
+        ruc: ruc
+      }
+    });
+    if (!cliente) throw new Error(`No existe Cliente con RUC ${ruc}`);
+    return cliente;
   } catch (error) {
     throw new Error('Error al obtener el cliente');
   };
@@ -81,7 +111,10 @@ const eliminarCliente = async (id) => {
 
 module.exports = {
     obtenerClientes,
-    obtenerClientePorId,
+    obtenerClienteById,
+    obtenerClienteByApellido,
+    obtenerClienteByDni,
+    obtenerClienteByRuc,
     crearCliente,
     actualizarCliente,
     eliminarCliente
