@@ -3,7 +3,7 @@ const { Cliente } = require('../db.js');
 const { Op } = require('sequelize');
 
 //Obtener todos los clientes
-const obtenerClientes = async () => {
+const getAllClientes = async () => {
   try {
     const clientes = await Cliente.findAll();
     return clientes;
@@ -13,7 +13,7 @@ const obtenerClientes = async () => {
 };
 
 //obtener un cliente por id
-const obtenerClienteById = async (id) => {
+const getClienteById = async (id) => {
   try {
     const cliente = await Cliente.findByPk(id);
     if (!cliente) {
@@ -26,7 +26,7 @@ const obtenerClienteById = async (id) => {
 };
 
 //obtener un cliente por apellido o nombre de empresa que estará almacenado en apellido paterno
-const obtenerClienteByApellido = async (apellido) => {
+const getClienteByApellido = async (apellido) => {
   try {
     const clientes = await Cliente.findAll({
       where: {
@@ -40,7 +40,7 @@ const obtenerClienteByApellido = async (apellido) => {
 };
 
 //obtener un cliente por dni
-const obtenerClienteByDni = async (dni) => {
+const getClienteByDni = async (dni) => {
   try {
     const cliente = await Cliente.findOne({
       where: {
@@ -57,7 +57,7 @@ const obtenerClienteByDni = async (dni) => {
 };
 
 //obtener un cliente por ruc
-const obtenerClienteByRuc = async (ruc) => {
+const getClienteByRuc = async (ruc) => {
   try {
     const cliente = await Cliente.findOne({
       where: {
@@ -72,7 +72,7 @@ const obtenerClienteByRuc = async (ruc) => {
 };
 
 //crear un cliente
-const crearCliente = async (clienteData) => {
+const createCliente = async (clienteData) => {
   try {
     const nuevoCliente = await Cliente.create(clienteData);
     return nuevoCliente;
@@ -82,7 +82,7 @@ const crearCliente = async (clienteData) => {
 }; 
 
 //actualizar un cliente
-const actualizarCliente = async (id, clienteData) => {
+const updateCliente = async (id, clienteData) => {
     try {
         const cliente = await Cliente.findByPk(id);
         if (!cliente) {
@@ -96,7 +96,7 @@ const actualizarCliente = async (id, clienteData) => {
 };
 
 //Eliminar un cliente
-const eliminarCliente = async (id) => {
+const deleteCliente = async (id) => {
     try {
         const cliente = await Cliente.findByPk(id);
         if (!cliente) {
@@ -110,12 +110,12 @@ const eliminarCliente = async (id) => {
 };
 
 module.exports = {
-    obtenerClientes,
-    obtenerClienteById,
-    obtenerClienteByApellido,
-    obtenerClienteByDni,
-    obtenerClienteByRuc,
-    crearCliente,
-    actualizarCliente,
-    eliminarCliente
+    getAllClientes,
+    getClienteById,
+    getClienteByApellido,
+    getClienteByDni,
+    getClienteByRuc,
+    createCliente,
+    updateCliente,
+    deleteCliente,
 };
