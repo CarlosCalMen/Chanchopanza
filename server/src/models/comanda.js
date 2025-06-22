@@ -41,7 +41,11 @@ module.exports = (sequelize)=>{
             type:DataTypes.BOOLEAN,
             allowNull:false,
             defaultValue:false,
-        }
+        },
+        estado:{
+            type:DataTypes.ENUM('Pendiente',/*'EnProceso','Finalizada',*/'Cancelada'),
+            defaultValue:'Pendiente',
+        },
     },
     {   timestamps:false,
         tableName:'comandas',
