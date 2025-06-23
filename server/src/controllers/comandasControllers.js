@@ -1,4 +1,4 @@
-require('dotenv').config();
+//require('dotenv').config();
 const { Comanda, Sucursal, Cliente, Producto, DetalleComanda} = require('../db.js');
 const { Op } = require('sequelize');
 
@@ -90,7 +90,7 @@ const getComandasByClienteId=async(clienteId)=>{
             ],
             order: [['fecha', 'DESC']]           
         });
-        if (!comandas) throw new Error(`No existen comandas para el cliente con el documento indicado`);
+        if (comandas.length === 0) throw new Error(`No existen comandas para el cliente con el documento indicado`);
         return comandas;
     } catch (error) {
         throw new Error(`Error al obtener la comanda: ${error.message}`);
@@ -98,13 +98,18 @@ const getComandasByClienteId=async(clienteId)=>{
 };
 
 //obtener comandas de una sucursal por fecha
-const getComandasByFecha=async(fechaConsumo, sucursalId)=>{
+const getComandasByFecha=async(desde, hasta, sucursalId=null)=>{
     try {
-        const comandas = await Comanda.findAll({
-            where: {
-                fecha: fechaConsumo,
-                idSucursal: sucursalId,
+        const whereConditions = {
+            fecha: {
+                [Op.between]: [desde, hasta],
             },
+        };
+        if (sucursalId) {
+            whereConditions.idSucursal = sucursalId;
+        };
+        const comandas = await Comanda.findAll({
+            where: whereConditions,
             include: [
                 {
                     model: Cliente,
@@ -125,7 +130,7 @@ const getComandasByFecha=async(fechaConsumo, sucursalId)=>{
             ],
             order: [['total', 'DESC']] 
         });
-        if (!comandas) throw new Error(`No existen comandas con fecha: ${fechaConsumo}`);
+        if (comandas.length === 0) throw new Error(`No existen comandas en el rango de fechas especificado${sucursalId ? ' para esta sucursal' : ''}`);
         return comandas;
     } catch (error) {
         throw new Error(`Error al obtener las comandas: ${error.message}`);
@@ -159,7 +164,7 @@ const getComandasByEstado=async(estadoComanda)=>{
             ],
             order: [['fecha', 'DESC']], 
         });
-        if (!comandas) throw new Error(`No existen comandas en estado: ${estadoComanda}`);
+        if (comandas.length === 0) throw new Error(`No existen comandas en estado: ${estadoComanda}`);
         return comandas;
     } catch (error) {
         throw new Error(`Error al obtener las comandas: ${error.message}`);
@@ -167,16 +172,20 @@ const getComandasByEstado=async(estadoComanda)=>{
 };
 
 //obtener ingresos por fecha
-const getIngresosByFecha=async(desde,hasta)=>{
+const getIngresosByFecha=async(desde,hasta,sucursalId=null)=>{
     try {
         // Asume que las fechas ya están validadas
-        const resultado = await Comanda.sum('total', {
-            where: {
-                fecha: {
-                    [Op.between]: [new Date(desde), new Date(hasta)],
-                },
-                estado: 'Cancelada',
+        const whereConditions = {
+            fecha: {
+                [Op.between]: [new Date(desde), new Date(hasta)],
             },
+            estado: 'Cancelada',
+        };
+        if (sucursalId) {
+            whereConditions.idSucursal = sucursalId;
+        };
+        const resultado = await Comanda.sum('total', {
+            where: whereConditions,
         });
         return resultado || 0;
     } catch (error) {
@@ -200,104 +209,111 @@ const pagarComanda=async(comandaId)=>{
 const updateComanda = async (comandaId, { comandaData, detalles }) => {
     const transaction = await sequelize.transaction();
     try {
-        // 1. Actualizar comanda principal
         const comanda = await Comanda.findByPk(comandaId, { transaction });
-        if (!comanda) throw new Error('Comanda no encontrada');
-        
-        if (comandaData) {
-            await comanda.update(comandaData, { transaction });
-        };
-        // 2. Procesar detalles solo si se enviaron
+        await comanda.update(comandaData || {}, { transaction });
+        //  Procesar detalles si se proporcionan
         if (detalles) {
-            const detallesActuales = await DetalleComanda.findAll({ 
-                where: { comandaId }, 
-                transaction, 
-            });
-            // --- Lógica de sincronización ---
-            // IDs de detalles recibidos (los que tienen id son existentes)
-            const detallesRecibidosIds = detalles.filter(d => d.idDetalleComanda).map(d => d.idDetalleComanda);
-            // Eliminar detalles no incluidos en la petición
-            const detallesAEliminar = detallesActuales.filter(da => !detallesRecibidosIds.includes(da.idDetalleComanda));
-            await DetalleComanda.destroy({
-                where: { 
-                    idDetalleComanda: detallesAEliminar.map(d => d.idDetalleComanda) 
-                },
-                transaction,
-            });
-            // Actualizar/Crear detalles
-            for (const detalle of detalles) {
-                if (detalle.idDetalleComanda) {
-                    // Actualizar detalle existente
-                    await DetalleComanda.update(detalle, {
+            // Separar detalles en operaciones
+            const [toUpdate, toCreate] = detalles.reduce(
+                (acc, detalle) => {
+                    acc[detalle.idDetalleComanda ? 0 : 1].push(detalle);
+                    return acc;
+                }, 
+                [[], []]
+            );
+            // Eliminación eficiente
+            if (toUpdate.length > 0) {
+                await DetalleComanda.destroy({
+                    where: {
+                        comandaId,
+                        idDetalleComanda: { 
+                            [Op.notIn]: toUpdate.map(detalle => detalle.idDetalleComanda) 
+                        }
+                    },
+                    transaction,
+                });
+            } else {
+                // Si no hay detalles para actualizar, eliminar todos
+                await DetalleComanda.destroy({
+                    where: { comandaId },
+                    transaction,
+                });
+            };
+            // Actualización en lote
+            await Promise.all(
+                toUpdate.map(detalle =>
+                    DetalleComanda.update(detalle, {
                         where: { idDetalleComanda: detalle.idDetalleComanda },
                         transaction
-                    });
-                } else {
-                    // Crear nuevo detalle
-                    await DetalleComanda.create({
-                        ...detalle,
-                        comandaId
-                    }, { transaction });
-                };
+                    }),
+                ),
+            );
+            // Creación en lote
+            if (toCreate.length > 0) {
+                await DetalleComanda.bulkCreate(
+                    toCreate.map(d => ({ ...d, comandaId })),
+                    { transaction }
+                );
             };
         };
         await transaction.commit();
-        // Devolver comanda actualizada con detalles
+        // Devolver comanda con relaciones
         return await Comanda.findByPk(comandaId, {
             include: [{
                 model: DetalleComanda,
-                include: [Producto] // Opcional: incluir productos si es necesario
+                include: [Producto]
             }],
-            transaction,
+            transaction
         });
     } catch (error) {
         await transaction.rollback();
-        throw new Error(`Error al actualizar comanda: ${error.message}`);
+        throw error;
     };
 };
 
 //obtener ranking de productos
-const getProductosVendidos = async (sucursalId,Desde,Hasta) => {
+const getProductosVendidos = async (desde, hasta, sucursalId = null) => {
     try {
+        const whereConditions = {
+            fecha: { [Op.between]: [new Date(desde), new Date(hasta)] },
+            estado: 'Pagada'
+        };
+        if (sucursalId) {
+            whereConditions.sucursalId = sucursalId;
+        };
         const reporte = await DetalleComanda.findAll({
             attributes: [
                 [sequelize.fn('SUM', sequelize.col('cantidad')), 'totalVendido'],
-                [sequelize.fn('SUM', sequelize.literal('cantidad * "DetalleComanda"."precioVenta"')), 'ingresosTotales']
+                [sequelize.fn('SUM', sequelize.literal('cantidad * "DetalleComanda"."subTotal"')), 'ingresosTotales']
             ],
             include: [
                 {
                     model: Producto,
-                    attributes: ['nombre'], 
+                    attributes: ['nombre'],
                     required: true
                 },
                 {
                     model: Comanda,
-                    where: {
-                        fecha: { [Op.between]: [new Date(fechaDesde), new Date(fechaHasta)] },
-                        sucursalId: sucursalId,
-                        estado: 'Pagado',
-                    },
-                   // attributes: []
-                }
+                    where: whereConditions,
+                },
             ],
             group: ['Producto.nombre'],
-            order: [[sequelize.literal('totalVendido'), 'DESC']], 
+            order: [[sequelize.literal('totalVendido'), 'DESC']],
             raw: true
         });
         return reporte.map(item => ({
             producto: item['Producto.nombre'],
             unidadesVendidas: parseInt(item.totalVendido),
-            ingresos: parseFloat(item.ingresosTotales).toFixed(2) // Formato monetario
+            ingresos: parseFloat(item.ingresosTotales).toFixed(2)
         }));
     } catch (error) {
         throw new Error(`Error generando reporte: ${error.message}`);
     }
 };
-
 //eliminar comanda
 const deleteComanda = async (comandaId) => {
     try {
-        const comanda = await Comanda.findByPk(id);
+        const comanda = await Comanda.findByPk(comandaId);
         if (!comanda) {
             throw new Error(`Comanda con id: ${comandaId}`);
         };
@@ -345,5 +361,4 @@ module.exports = {
     updateComanda,
     deleteComanda,
     createComanda,
-    getProductosVendidos
 };
