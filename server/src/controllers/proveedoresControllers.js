@@ -47,9 +47,9 @@ const getProveedorByNombre = async (proveedor) => {
 };
 
 //crear un Proveedor
-const createProveedor = async (productoData) => {
+const createProveedor = async (proveedorData) => {
     try {
-        const nuevoProveedor = await Proveedor.create(productoData);
+        const nuevoProveedor = await Proveedor.create(proveedorData);
         return nuevoProveedor;
     } catch (error) {
         throw new Error(`Error al obtener el Proveedor: ${error.message}`);
@@ -57,13 +57,13 @@ const createProveedor = async (productoData) => {
 };
 
 //actualizar un Proveedor
-const updateProveedor = async (proveedorId, productoData) => {
+const updateProveedor = async (proveedorId, proveedorData) => {
     try {
         const proveedor = await Proveedor.findByPk(proveedorId);
         if (!proveedor) {
             throw new Error(`No existe Proveedor con ID ${proveedorId}`);
         };
-        await Proveedor.update(productoData);
+        await Proveedor.update(proveedorData);
         return proveedor;
     } catch (error) {
         throw new Error(`Error al obtener el Proveedor: ${error.message}`);

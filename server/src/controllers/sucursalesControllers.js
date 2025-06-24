@@ -1,95 +1,90 @@
-const {Proveedor} = require('../db.js');
+const {Sucursal} = require('../db.js');
 const { Op } = require('sequelize');
 
-//Obtener todos los Proveedors
- const getAllProveedores=(sucursalId = null) => {
+//Obtener todos los sucursals
+ const getAllSucursales=() => {
     try {
-        const whereConditions ={};
-        if (sucursalId) {
-            whereConditions.sucursalId = sucursalId;
-        };
-        const proveedores = Proveedor.findAll({
-            where: whereConditions,
-            order: [['proveedor', 'ASC']],
+        const sucursales = Sucursal.findAll({
+            order: [['Sucursal', 'ASC']],
         });
-        return proveedores;
+        return sucursales;
     } catch (error) {
-        throw new Error(`Error al obtener los Proveedors: ${error.message}`);
+        throw new Error(`Error al obtener las sucursals: ${error.message}`);
     };
  };
 
- //obtener un Proveedor por id
-const getProveedorById = async (proveedorId) => {
+ //obtener un Sucursal por id
+const getSucursalById = async (sucursalId) => {
     try {
-        const proveedor = await Proveedor.findByPk(proveedorId);
-        if (!proveedor) {
-            throw new Error(`No existe Proveedor con ID ${proveedorId}`);
+        const sucursal = await Sucursal.findByPk(sucursalId);
+        if (!sucursal) {
+            throw new Error(`No existe Sucursal con ID ${sucursalId}`);
         }
-        return proveedor;
+        return sucursal;
     } catch (error) {
-        throw new Error(`Error al obtener el Proveedor: ${error.message}`);
+        throw new Error(`Error al obtener Sucursal: ${error.message}`);
     };
 };
-//obtener un Proveedor por nombre de proveedor
-const getProveedorByNombre = async (proveedor) => {
+//obtener un Sucursal por nombre de Sucursal
+const getSucursalByNombre = async (sucursal) => {
     try {
-        const proveedores = await Proveedor.findAll({
+        const sucursales = await Sucursal.findAll({
             where: {
-                proveedor: {
-                    [Op.iLike]: `%${proveedor}%`
+                sucursal: {
+                    [Op.iLike]: `%${sucursal}%`
                 },
             }});
-        if (proveedores.length===0) throw new Error('Proveedores no encontrados');
-        return proveedores.slice(0,15);
+        if (sucursales.length===0) throw new Error('sucursales no encontrados');
+        return sucursales.slice(0,15);
     } catch (error) {
-        throw new Error(`Error al obtener el Proveedor: ${error.message}`);
+        throw new Error(`Error al obtener el Sucursal: ${error.message}`);
     };
 };
 
-//crear un Proveedor
-const createProveedor = async (productoData) => {
+//crear un Sucursal
+const createSucursal = async (sucursalData) => {
     try {
-        const nuevoProveedor = await Proveedor.create(productoData);
-        return nuevoProveedor;
+        const nuevaSucursal = await Sucursal.create(sucursalData);
+        return nuevaSucursal;
     } catch (error) {
-        throw new Error(`Error al obtener el Proveedor: ${error.message}`);
+        throw new Error(`Error al obtener el Sucursal: ${error.message}`);
     };
 };
 
-//actualizar un Proveedor
-const updateProveedor = async (proveedorId, productoData) => {
+//actualizar un Sucursal
+const updatesucursal = async (sucursalId, sucursalData) => {
     try {
-        const proveedor = await Proveedor.findByPk(proveedorId);
-        if (!proveedor) {
-            throw new Error(`No existe Proveedor con ID ${proveedorId}`);
+        const sucursal = await Sucursal.findByPk(sucursalId);
+        if (!sucursal) {
+            throw new Error(`No existe Sucursal con ID ${sucursalId}`);
         };
-        await Proveedor.update(productoData);
-        return proveedor;
+        await Sucursal.update(sucursalData);
+        return sucursal;
     } catch (error) {
-        throw new Error(`Error al obtener el Proveedor: ${error.message}`);
+        throw new Error(`Error al obtener el Sucursal: ${error.message}`);
     };
 };
 
-//Eliminar un Proveedor
-const deleteProveedor = async (proveedorId) => {
+//Eliminar un Sucursal
+const deletesucursal = async (sucursalId) => {
     try {
-        const proveedor = await Proveedor.findByPk(proveedorId);
-        if (!proveedor) {
-            throw new Error(`No existe Proveedor con ID ${proveedorId}`);
+        const sucursal = await Sucursal.findByPk(sucursalId);
+        if (!sucursal) {
+            throw new Error(`No existe Sucursal con ID ${sucursalId}`);
         };
-        await Proveedor.update({ eliminado: true });
-        return proveedor;
+        await Sucursal.update({ eliminado: true });
+        return sucursal;
     } catch (error) {
-        throw new Error(`Error al obtener el Proveedor: ${error.message}`);
+        throw new Error(`Error al obtener el Sucursal: ${error.message}`);
     };
 };
   
 
 module.exports = {
-    getAllProveedores,
-    getProveedorById,
-    getProveedorByNombre,
-    createProveedor,
-    updateProveedor,
-    deleteProveedor,
+    getAllSucursales,
+    getSucursalById,
+    getSucursalByNombre,
+    createSucursal,
+    updatesucursal,
+    deletesucursal,
 };
