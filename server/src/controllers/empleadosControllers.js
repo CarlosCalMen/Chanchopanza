@@ -30,12 +30,14 @@ const getEmpleadoById = async (empleadoId) => {
         throw new Error(`Error al obtener el empleado: ${error.message}`);
     };
 };
-//obtener un empleado por apellido
+//obtener un empleado por apellidoPaterno
 const getEmpleadoByApellido = async (apellido) => {
     try {
         const empleados = await Empleado.findAll({
             where: {
-                [Op.iLike]: `%${apellido}%`
+                apellidoPaterno:{
+                    [Op.iLike]: `%${apellido}%`
+                },
             }});
         if (!empleados) throw new Error('Empleados no encontrados');
         return empleados.slice(0,15);

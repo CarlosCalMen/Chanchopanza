@@ -11,6 +11,14 @@ module.exports = (sequelize)=>{
             type: DataTypes.STRING,
             allowNull: false,
          },
+         apellidoPaterno: {
+            type: DataTypes.STRING,
+            allowNull: false,
+         },
+         apellidoMaterno: {
+            type: DataTypes.STRING,
+            allowNull: false,
+         },
         dni:{
             type:DataTypes.STRING,
             allowNull:true,

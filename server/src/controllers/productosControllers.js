@@ -35,7 +35,9 @@ const getProductoByNombre = async (producto) => {
     try {
         const productos = await Producto.findAll({
             where: {
-                [Op.iLike]: `%${producto}%`
+                producto: {
+                    [Op.iLike]: `%${producto}%`
+                },
             }});
         if (productos.length===0) throw new Error('Productos no encontrados');
         return productos.slice(0,15);

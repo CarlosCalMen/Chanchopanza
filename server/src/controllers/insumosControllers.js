@@ -35,7 +35,9 @@ const getInsumoByNombre = async (insumo) => {
     try {
         const insumos = await Insumo.findAll({
             where: {
-                [Op.iLike]: `%${insumo}%`
+                insumo:{
+                    [Op.iLike]: `%${insumo}%`
+                },
             }});
         if (insumos.length===0) throw new Error('Insumos no encontrados');
         return insumos.slice(0,15);

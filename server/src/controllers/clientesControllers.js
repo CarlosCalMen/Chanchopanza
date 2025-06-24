@@ -30,7 +30,9 @@ const getClienteByApellido = async (apellido) => {
   try {
     const clientes = await Cliente.findAll({
       where: {
-        [Op.iLike]: `%${apellido}%`
+        apellidoPaterno:{
+          [Op.iLike]: `%${apellido}%`
+        },
       }});
     if (!clientes) throw new Error('Clientes no encontrados');
     return clientes.slice(0,15);
@@ -61,8 +63,8 @@ const getClienteByRuc = async (ruc) => {
   try {
     const cliente = await Cliente.findOne({
       where: {
-        ruc: ruc
-      }
+        ruc: ruc,
+      },
     });
     if (!cliente) throw new Error(`No existe Cliente con RUC ${ruc}`);
     return cliente;
