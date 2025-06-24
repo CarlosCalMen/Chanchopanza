@@ -1,5 +1,5 @@
 const {Empleado} = require('../db.js');
-const { Op, where } = require('sequelize');
+const { Op } = require('sequelize');
 
 //Obtener todos los empleados
  const getAllEmpleados=(sucursalId = null) => {
