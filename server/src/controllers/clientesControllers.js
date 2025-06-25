@@ -1,4 +1,3 @@
-//require('dotenv').config();
 const { Cliente } = require('../db.js');
 const { Op } = require('sequelize');
 
