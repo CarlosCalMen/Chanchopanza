@@ -1,6 +1,8 @@
 //require('dotenv').config();
-const { Comanda, Sucursal, Cliente, Producto, DetalleComanda} = require('../db.js');
+const { Comanda, Sucursal, Cliente, Producto, DetalleComanda,Insumo,Receta} = require('../db.js');
 const { Op } = require('sequelize');
+const producto = require('../models/producto.js');
+const { act } = require('react');
 
 //Obtener todas las comandas
 const getAllComandas=async()=>{
@@ -331,22 +333,59 @@ const createComanda = async (comandaData, detalles) => {
         const nuevaComanda = await Comanda.create(comandaData, { transaction });
         await DetalleComanda.bulkCreate(
             detalles.map(detalle => ({ ...detalle, comandaId: nuevaComanda.idComanda })),
-            { transaction }
+            { transaction },
         );
-        await transaction.commit();
-        return await Comanda.findByPk(nuevaComanda.idComanda, {
+        await actualizarStockInsumos(nuevaComanda.idComanda, { transaction });
+        const comandaCompleta = await Comanda.findByPk(nuevaComanda.idComanda, {
             include: [DetalleComanda],
             transaction,
         });
+        await transaction.commit();
+        return comandaCompleta;        
     } catch (error) {
         try {
             await transaction.rollback();
         } catch (rollbackError) {
             console.error('Rollback fallido:', rollbackError);
         }
-        error.message = `Error al crear la comanda: ${error.message}`;
-        throw error;
+        throw new Error(`Error al crear la comanda: ${error.message}`);
     }
+};
+
+//const updateStockInsumosComanda
+const actualizarStockInsumos = async (comandaId) => {
+  const transaction = await sequelize.transaction();
+  try {
+    const comanda = await Comanda.findByPk(comandaId, {
+      include: [{ model: Producto, through: { attributes: ['cantidad'] }}],
+      transaction,
+    });
+    if (!comanda) throw new Error(`Comanda no encontrada: ${comandaId}`);
+    const productosConRecetas = await Promise.all(
+      comanda.Productos.map(async productoComanda => ({
+        producto: productoComanda,
+        recetas: await Receta.findAll({ 
+          where: { idProducto: productoComanda.idProducto },
+          transaction,
+        }),
+      })),
+    );
+    await Promise.all(productosConRecetas.flatMap(({ producto, recetas }) => 
+      recetas.map(async receta => {
+        const cantidadTotal = receta.cantidad * producto.DetalleComanda.cantidad;
+        await Insumo.decrement('stock', {
+          by: cantidadTotal,
+          where: { idInsumo: receta.idInsumo },
+          transaction,
+        });
+      })
+    ));
+    await transaction.commit();
+    return { success: true };
+  } catch (error) {
+    await transaction.rollback();
+    throw error;
+  };
 };
 
 module.exports = {
