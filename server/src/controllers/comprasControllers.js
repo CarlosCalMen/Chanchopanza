@@ -322,11 +322,17 @@ const createCompra = async (compraData, detalles) => {
             detalles.map(detalle => ({ ...detalle, compraId: nuevaCompra.idCompra })),
             { transaction },
         );
+        await actualizarStockPorCompra(nuevaCompra.idCompra,{transaction});
         await transaction.commit();
-        return await Compra.findByPk(nuevaCompra.idCompra, {
+        const compraCreada = await Compra.findByPk(nuevaCompra.idCompra, {
             include: [DetalleCompra],
             transaction,
         });
+        return {
+            success:true,
+            compra:compraCreada,
+            message:'Compra registrada y stock actualizado'
+            } 
     } catch (error) {
         try {
             await transaction.rollback();
@@ -336,6 +342,36 @@ const createCompra = async (compraData, detalles) => {
         error.message = `Error al crear la comanda: ${error.message}`;
         throw error;
     }
+};
+
+//const updateStockInsumosCompra
+const actualizarStockPorCompra = async (compraId) => {
+  const transaction = await sequelize.transaction();
+  try {
+    const compra = await Compra.findByPk(compraId, {
+      include: [{
+        model: DetalleCompra,
+        attributes: ['idDetalle', 'idInsumo','cantidad'],
+        include: [Insumo], 
+      }],
+      transaction,
+    });
+    if (!compra) throw new Error(`Compra no encontrada con ID: ${compraId}`);
+    await Promise.all(
+      compra.DetalleCompras.map(async detalle => {
+      await Insumo.increment('stock', {
+        by: detalle.cantidad,
+        where: { idInsumo: detalle.insumoId },
+        transaction,
+      });
+      })
+    );
+    await transaction.commit();
+    return { success: true, message: 'Stock actualizado correctamente' };
+  } catch (error) {
+    await transaction.rollback();
+    throw new Error(`Error al procesar compra: ${error.message}`);
+  }
 };
 
 module.exports={
