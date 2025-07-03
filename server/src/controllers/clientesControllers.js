@@ -17,10 +17,10 @@ const getClienteById = async (id) => {
     const cliente = await Cliente.findByPk(id);
     if (!cliente) {
       throw new Error(`No existe Cliente con ID ${id}`);
-    }
+    };
     return cliente;
   } catch (error) {
-    throw new Error('Error al obtener el cliente');
+    throw new Error(`Error al obtener al cliente: ${error.message}`);
   };
 };
 

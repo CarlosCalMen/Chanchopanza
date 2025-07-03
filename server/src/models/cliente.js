@@ -7,6 +7,11 @@ module.exports = (sequelize)=>{
             primaryKey:true,
             defaultValue:DataTypes.UUIDV4,
         },
+        tipoCliente:{
+            type:DataTypes.ENUM('NATURAL','JURIDICA'),
+            allowNull:false,
+            defaultValue:'NATURAL',
+        },
         nombre:{
             type:DataTypes.STRING,
             allowNull:false,
@@ -28,6 +33,11 @@ module.exports = (sequelize)=>{
             validate:{
                 is:/^\d{8}$/
             },
+        },
+        razonSocial:{
+            type:DataTypes.STRING,
+            allowNull:true,
+            defaultValue:'',
         },
         ruc:{
             type:DataTypes.STRING,
