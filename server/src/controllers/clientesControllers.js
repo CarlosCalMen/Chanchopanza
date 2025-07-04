@@ -40,6 +40,22 @@ const getClienteByApellido = async (apellido) => {
   };
 };
 
+//obtener un cliente por razon social
+const getClienteByRazonSocial = async (razonSocial) => {
+  try {
+    const clientes = await Cliente.findAll({
+      where: {
+        razonSocial:{
+          [Op.iLike]: `%${razonSocial}%`
+        },
+      }});
+    if (!clientes) throw new Error('Clientes no encontrados');
+    return clientes.slice(0,15);
+  } catch (error) {
+    throw new Error('Error al obtener el cliente');
+  };
+};  
+
 //obtener un cliente por dni
 const getClienteByDni = async (dni) => {
   try {
@@ -114,6 +130,7 @@ module.exports = {
     getAllClientes,
     getClienteById,
     getClienteByApellido,
+    getClienteByRazonSocial,
     getClienteByDni,
     getClienteByRuc,
     createCliente,

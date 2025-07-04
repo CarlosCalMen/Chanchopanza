@@ -133,4 +133,6 @@ const validarCliente = (cliente) => {
 
 module.exports = {
   validarCliente,
+  validarDNI,
+  validarRUC,
 };
