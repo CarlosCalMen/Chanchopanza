@@ -2,7 +2,7 @@ const { act } = require('react');
 const {getAllClientes,getClienteById,getClienteByApellido,getClienteByDni,
     getClienteByRuc,createCliente,updateCliente,deleteCliente,} = require('../controllers/clientesControllers.js'); 
 
-const {validarCliente,validarDNI,validarRUC} =require('../validations/validaciones.js');    
+const {validarCliente,validarDNI,validarRUC} =require('../validations/validacionesCliente.js');    
 
 const getAllClientsHandler = async(req,res)=>{
     try {

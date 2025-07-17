@@ -1,6 +1,7 @@
-const sellsControllers = require('../controllers/productsControllers.js');
+const {getAllProductos, getProductoById, getProductoByNombre,
+        createProducto, updateProducto, deleteProducto} = require('../controllers/productsControllers.js');
 
-const getAllProductsHandler=(req,res)=>{
+const getAllProductosHandler=(req,res)=>{
    // const {fechaInicio,fechaFin} = req.query;
    // if (fechaInicio) {
         // res.status(200).send('Queremos las ventas de un periodo de tiempo');

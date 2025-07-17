@@ -1,8 +1,6 @@
 //require('dotenv').config();
 const { Comanda, Sucursal, Cliente, Producto, DetalleComanda,Insumo,Receta} = require('../db.js');
 const { Op } = require('sequelize');
-const producto = require('../models/producto.js');
-const { act } = require('react');
 
 //Obtener todas las comandas
 const getAllComandas=async()=>{
@@ -212,6 +210,7 @@ const updateComanda = async (comandaId, { comandaData, detalles }) => {
     const transaction = await sequelize.transaction();
     try {
         const comanda = await Comanda.findByPk(comandaId, { transaction });
+        if (!comanda) throw new Error(`Comanda con id: ${comandaId} no encontrada`);
         await comanda.update(comandaData || {}, { transaction });
         //  Procesar detalles si se proporcionan
         if (detalles) {
@@ -265,7 +264,7 @@ const updateComanda = async (comandaId, { comandaData, detalles }) => {
                 model: DetalleComanda,
                 include: [Producto]
             }],
-            transaction
+            transaction,
         });
     } catch (error) {
         await transaction.rollback();
