@@ -26,7 +26,79 @@ const validarRangoFechas = (desde, hasta) => {
     return true;
 };
 
+const validarTexto = (valor, nombreCampo, esOpcional = false) => {
+  if (esOpcional && (valor === undefined || valor === null || valor === '')) {
+    return null;
+  };
+  if (!valor && !esOpcional) {
+    return `El campo ${nombreCampo} es requerido`;
+  };
+  if (typeof valor !== 'string') {
+    return `El campo ${nombreCampo} debe ser texto`;
+  };
+  if (/\d/.test(valor)) {
+    return `El campo ${nombreCampo} no debe contener números`;
+  };
+  return null;
+};
+
+//Funcion de apoyo para validar que los campos que deebn ser númericos
+//cumplan esa condición, aparte de que sean valores váidos para DNIs o RUCs
+const validarNumero = (valor, nombreCampo, longitud, esOpcional = false, valorPorDefecto = null) => {
+  if (esOpcional && !valor) {
+    return valorPorDefecto ? null : { error: null, valor: valorPorDefecto };
+  };
+  if (!valor && !esOpcional) {
+    return `El campo ${nombreCampo} es requerido`;
+  };
+  const strValor = valor.toString();
+  if (!/^\d+$/.test(strValor)) {
+    return `El campo ${nombreCampo} solo debe contener dígitos`;
+  };
+  if (strValor.length !== longitud) {
+    return `El campo ${nombreCampo} debe tener ${longitud} dígitos`;
+  };
+  return null;
+};
+
+
+//función de apoyo para validar que el teléfono sea válido
+const validarTelefono = (telefono, esOpcional = true) => {
+  if (esOpcional && !telefono) return null;
+  const errorGeneral = validarNumero(telefono, 'teléfono', 9, esOpcional);
+  if (errorGeneral && typeof errorGeneral === 'string') return errorGeneral;
+  const numTelefono = parseInt(telefono);
+  if (numTelefono <= 900000000) {
+    return 'El teléfono debe ser mayor a 900000000';
+  };
+  return null;
+};
+
+//funcion de apoyo para validar que el RUC sea válido
+const validarRUC = (ruc) => {
+  const errorGeneral = validarNumero(ruc, 'RUC', 11, false);
+  if (errorGeneral) return errorGeneral;
+  if (!/^[12]/.test(ruc)) {
+    return 'El RUC debe comenzar con 1 ó 2';
+  };
+  return null;
+};
+
+//funcion de apoyo para validar que el DNI sea válido
+const validarDNI = (dni, esGenerico = false) => {
+  if (esGenerico) {
+    return { error: null, valor: '00000000' };
+  }
+  const resultado = validarNumero(dni, 'DNI', 8, false);
+  return typeof resultado === 'string' ? { error: resultado } : { error: null, valor: dni };
+};
+
+
 module.exports = { 
                 esFechaValidaDDMMYYYY,
                 validarRangoFechas,
+                validarTexto,
+                validarDNI,
+                validarRUC,
+                validarTelefono,
                 };
