@@ -17,7 +17,7 @@ module.exports = (sequelize)=>{
             defaultValue:0,
         },
         precioVenta:{
-            type:DataTypes.FLOAT,
+            type:DataTypes.DECIMAL(10,2),
             allowNull:false,
             defaultValue: 0,
         },

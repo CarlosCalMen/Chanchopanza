@@ -1,4 +1,4 @@
-const { validarTexto } = require('./validacionesGenerales');
+const { validarTexto,validarYFormatearPrecio } = require('./validacionesGenerales');
 
 const categoriasValidas = ['BEBIDAS', 'PRODUCTO ELABORADO', 'INSUMO', 'SERVICIO'];
 const unidadesValidas = ['KG', 'UN', 'PQT', 'ATADO'];
@@ -27,15 +27,7 @@ const validarInsumo = ({ insumo,categoria,precio,unidad,eliminado}, esActualizac
       errores.unidad = `La unidad debe ser una de: ${unidadesValidas.join(', ')}`;
     };
   };
-  if (!esActualizacion || precio !== undefined) {
-    if (precio === undefined || precio === null) {
-      errores.precio = 'El campo precio es requerido';
-    } else if (typeof precio !== 'number' || isNaN(precio)) {
-      errores.precio = 'El campo precio debe ser un número';
-    } else if (precio < 0) {
-      errores.precio = 'El precio no puede ser negativo';
-    };
-  };
+  errores.precio=validarYFormatearPrecio(precio,'precio',esActualizacion);
   if (eliminado !== undefined && typeof eliminado !== 'boolean') {
     errores.eliminado = 'El campo eliminado debe ser un booleano';
   };

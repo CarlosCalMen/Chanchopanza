@@ -93,6 +93,15 @@ const validarDNI = (dni, esGenerico = false) => {
   return typeof resultado === 'string' ? { error: resultado } : { error: null, valor: dni };
 };
 
+const validarYFormatearPrecio =(valor, nombreCampo, isUpdate = false)=> {
+  if (!isUpdate && (valor === undefined || valor === null)) return `El ${nombreCampo} es un campo obligatorio`;
+  if (isUpdate && (valor === undefined || valor === null))return null; 
+  const numero = parseFloat(valor);
+  if (isNaN(numero)) return `El ${nombreCampo} debe ser un número válido`;
+  if (numero < 0) return `El ${nombreCampo} no puede ser negativo`;
+  valor = parseFloat(numero.toFixed(2));
+  return null;
+};
 
 module.exports = { 
                 esFechaValidaDDMMYYYY,
@@ -101,4 +110,5 @@ module.exports = {
                 validarDNI,
                 validarRUC,
                 validarTelefono,
+                validarYFormatearPrecio,
                 };

@@ -49,12 +49,29 @@ const getInsumoByCategoriaHandler = async (req, res) => {
 const createInsumoHandler = async (req, res) => {
     const { insumo, categoria, precio, unidad, sucursalId } = req.body;
     try {
-        const erroresCreacion = validarCreacionInsumo({insumo, categoria, precio, unidad,eliminado});
-        if (erroresCreacion) throw new Error(erroresCreacion);
+        const erroresCreacion = validarCreacionInsumo(insumo, categoria, precio, unidad,eliminado);
+        if (erroresCreacion){
+            const mensajeError = Object.entries(erroresCreacion)
+                .map(([campo, mensaje]) => `• ${campo}: ${mensaje}`)
+                .join('\n');
+            throw new Error(`Errores de validación:\n${mensajeError}`);
+        }; 
         const insumoCreado = await(createInsumo(insumo,categoria,precio,unidad,sucursalId));
-        res.status(200).json(insumoCreado);
+        res.status(201).json(insumoCreado);
     } catch (error) {
-        res.status(400).json(erroresCreacion);
+        if (error.message.startsWith('Errores de validación')) {
+            res.status(400).json({
+                success: false,
+                message: error.message,
+                errors: error.message.split('\n').slice(1), 
+            });
+        } else {
+            console.error('Error inesperado:', error);
+            res.status(500).json({
+                success: false,
+                message: 'Error interno del servidor'
+            });
+        };
     };
 };
 
@@ -62,12 +79,22 @@ const updateInsumoHandler = async (req,res) => {
     const {insumoId, insumo, categoria, precio, unidad, sucursalId} = req.body;
     try {
         if (!uuid.validate(insumoId)) throw new Error('Id de insumo Inválido');
-        const erroresActualizacion = validarActualizacionInsumo({insumo, categoria, precio, unidad,eliminado},true);
+        const erroresActualizacion = validarActualizacionInsumo(insumo, categoria, precio, unidad,eliminado,true);
         if (erroresActualizacion) throw new Error(erroresActualizacion);
         const insumoActualizado = await(updateInsumo(insumoId,insumo,categoria,precio,unidad,sucursalId));
         res.status(200).json(insumoActualizado);
     } catch (error) {
         res.status(400).json(erroresActualizacion);
+    };
+};
+
+const deleteInsumoHandler=async(req,res)=>{
+    const insumoId=req.params;
+    try {
+        const insumoEliminado = await deleteInsumo(insumoId);
+        res.status(201).json(insumoEliminado);
+    } catch (error) {
+        res.status(401).json({error:error.message});
     };
 };
 
